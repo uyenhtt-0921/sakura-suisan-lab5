@@ -15,7 +15,7 @@ nên số issue khớp Project. Đường dẫn spec tính từ `lab4-design/spe
 
 **Khi nào tách sub-issue**
 - Việc lớn hơn ngưỡng nhưng là một khối giao chung (vd. `rpc_confirm_trade`: khung transaction, kiểm tư cách, test đua) → issue cha + sub-issue.
-  Issue cha không tự làm; SWP của nó bằng tổng con, trên Project để trống để không cộng trùng.
+  Issue cha không tự làm; SWP và giờ của nó trên Project ghi bằng tổng con (khi cộng cột chỉ lấy việc có điểm trực tiếp để không trùng).
 - Chỉ 2 tầng dưới epic: issue → sub-issue.
 
 **Định nghĩa xong (DoD)**

@@ -40,8 +40,10 @@ Việc cần làm sau khi duyệt là chuyện độ hạt: 4 issue ≥ 8 SWP (#
   vì dự phòng tính ở mức dự án như LAB-1.
 - **Cách ra hệ số 7:** chấm Scope × Complexity cho 9 dòng chức năng LAB-1 (từ màn hình xem log tới nhập dữ liệu cũ), chia giờ LAB-1 (Plan B,
   không dự phòng) cho SWP → 7,16 giờ / SWP (khoảng 5,2–9,7); lấy 7 vì bằng đúng 1 ngày công của LAB-1.
-- **Áp dụng nhất quán:** script ghi `Hours = SWP × 7` lên Project cho mọi việc có SWP và đọc lại để kiểm (0 lệch); issue cha và epic để trống
-  (bằng tổng con). Giờ epic = tổng giờ issue; không làm tròn ở bước nào.
+- **Áp dụng nhất quán:** script ghi `Hours = SWP × 7` lên Project cho mọi việc có SWP và đọc lại để kiểm (0 lệch). Issue cha và epic ghi
+  **tổng các issue con** (SWP và giờ), nên mọi issue trên Project đều có số. Giờ epic = tổng giờ issue; không làm tròn ở bước nào.
+- **Lưu ý khi cộng cột trên Project:** chỉ cộng các việc có điểm trực tiếp (bỏ issue nhãn `epic` và issue có sub-issue), nếu không sẽ
+  tính trùng. Tổng 225 việc = tổng 17 epic = 940 SWP.
 
 ## 3. Tổng theo epic
 
