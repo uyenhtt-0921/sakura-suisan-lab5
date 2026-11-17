@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Estimate SWP — uyenhtt-0921 project 2 — 8 sub-issue tách ở phase 04</title>
+<style>
+:root{--ink:#22303F;--muted:#5B6B7C;--paper:#F5F7F8;--card:#FFFFFF;--line:#DDE4E9;
+--build:#0C7E9E;--rework:#B45309;--ok:#15803D;--warncol:#CA8A04;--bad:#B91C1C;
+--chip1:#E9F1F4;--chip2:#CBE2EA;--chip3:#8FC2D2;--chip4:#0C7E9E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+main{max-width:1120px;margin:0 auto;padding:20px 20px 64px}
+h1,h2,h3{font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;letter-spacing:-.015em}
+h1{font-size:28px;font-weight:700;margin:14px 0 4px}
+h2{font-size:20px;margin:40px 0 12px;display:flex;align-items:center;gap:10px;scroll-margin-top:64px}
+h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;color:var(--muted);font-weight:600}
+.meta{color:var(--muted);font-size:13px;margin-bottom:18px}
+a{color:var(--build);text-decoration:none} a:hover,a:focus-visible{text-decoration:underline}
+:focus-visible{outline:2px solid var(--build);outline-offset:2px;border-radius:2px}
+.num,.axes,.chip,.hcount,.hlabel,.tile b,.v{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+nav{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--line);
+display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;padding:8px 20px;font-size:13px}
+nav .links{display:flex;flex-wrap:wrap;gap:2px 14px} nav a{color:var(--ink);font-weight:600}
+.unitbox{margin-left:auto;display:flex;align-items:center;gap:6px}
+.unitbox input{width:64px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;font:inherit;text-align:right;background:var(--card);color:var(--ink)}
+#rate-wrap{display:none;align-items:center;gap:6px}
+body.hours #rate-wrap{display:inline-flex} body.hours .unit-note{display:block}
+.unit-note{display:none;font-size:12px;color:var(--warncol);font-weight:600}
+.thesis{font-size:18px;margin:16px 0 10px} .thesis b{color:var(--rework)}
+.compbar{display:flex;gap:2px;height:32px;border-radius:6px;overflow:hidden}
+.compbar .seg{display:flex;align-items:center;padding:0 12px;color:#fff;font-size:13px;font-weight:600;white-space:nowrap}
+.seg.build{background:var(--build);border-radius:6px 0 0 6px} .seg.rework{background:var(--rework);border-radius:0 6px 6px 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.summary-card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--build);border-radius:8px;padding:14px 18px;margin:18px 0}
+.summary-card h3{margin:0 0 8px;font-size:15px} .summary-card li{margin:4px 0;font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0 8px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px 16px}
+.tile b{display:block;font-size:24px;font-weight:700} .tile span{font-size:12.5px;color:var(--muted)}
+.tile.alert b{color:var(--bad)} .tile.warn b{color:var(--warncol)}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:24px;padding:0 7px;border-radius:12px;font-size:12.5px;font-weight:700;background:var(--chip1);color:var(--ink)}
+.chip.t2{background:var(--chip2)} .chip.t3{background:var(--chip3)} .chip.t4{background:var(--chip4);color:#fff}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card)}
+.card-table{border:1px solid var(--line);border-radius:8px;overflow:hidden}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line);background:var(--card)}
+th.num{text-align:right}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num{white-space:nowrap;text-align:right} td.axes{white-space:nowrap}
+th:first-child,td:first-child{padding-left:14px} td.title{min-width:260px}
+td.action{min-width:260px;font-size:12.5px;color:var(--muted)}
+button.sort{border:0;background:transparent;color:inherit;font:inherit;font-weight:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:0}
+.flag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.flag.contested{background:#FFF4DB;color:#8A5A00} .spread{font-size:11px;color:var(--muted);margin-left:6px;white-space:nowrap}
+.flag.split{background:#FBE9E9;color:var(--bad)} .flag.closed{background:#EAEEF1;color:var(--muted)}
+.conf{display:inline-flex;align-items:center;gap:5px;font-size:12.5px}
+.conf .dot{width:8px;height:8px;border-radius:50%}
+.conf.high .dot{background:var(--ok)} .conf.medium .dot{background:var(--warncol)} .conf.low .dot{background:var(--bad)}
+.conf.low{font-weight:700;color:var(--bad)}
+.hist{display:flex;gap:10px;align-items:flex-end;height:140px;padding:10px 4px 0;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-top:14px}
+.hbar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.hfill{width:70%;max-width:56px;background:var(--build);border-radius:4px 4px 0 0;min-height:3px}
+.hcount{font-size:12px;font-weight:700} .hlabel{font-size:12px;color:var(--muted);padding-bottom:6px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;align-items:center}
+.controls input[type=search]{flex:1 1 220px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--card);color:var(--ink)}
+.controls select{min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--card);color:inherit;font:inherit}
+.controls label{font-size:12.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.group{background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:14px}
+.group summary{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;cursor:pointer;padding:13px 16px;font-weight:600;list-style:none}
+.group summary::-webkit-details-marker{display:none}
+.group summary::before{content:"▸";color:var(--muted);margin-right:2px} .group[open] summary::before{content:"▾"}
+.g-meta{margin-left:auto;color:var(--muted);font-size:13px;font-weight:400} .g-meta b{color:var(--ink)}
+td.title details{margin-top:4px;font-size:12.5px} td.title summary{cursor:pointer;color:var(--build)}
+td.title details h4{margin:8px 0 2px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.audit{color:var(--muted)}
+.warning{color:var(--bad);font-weight:650}
+.note{font-size:13px;color:var(--muted)} .empty-state{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:26px;text-align:center}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+ul.plain{padding-left:18px;font-size:13.5px}
+.fbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:5px 13px;font:600 12.5px/1 inherit;cursor:pointer}
+.fbtn[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+code{background:#EAEEF1;padding:2px 5px;border-radius:4px}
+footer{margin-top:44px;border-top:1px solid var(--line);padding-top:14px;font-size:12.5px;color:var(--muted)}
+@media (max-width:640px){.compbar .seg{font-size:0;padding:0}.legend{flex-direction:column;gap:4px}h1{font-size:23px}nav{font-size:12px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{body{background:#fff}nav,.controls{display:none}.group{break-inside:avoid}details:not([open])>*:not(summary){display:block}}
+</style></head><body>
+<nav aria-label="Mục lục">
+  <div class="links">
+    <a href="#summary">Tổng quan</a><a href="#team">Team</a><a href="#risks">Rủi ro</a>
+    <a href="#issues">Chi tiết</a><a href="#calibration-audit">Hiệu chỉnh</a><a href="#caveats">Lưu ý</a>
+  </div>
+  <div class="unitbox">
+    <button class="fbtn" id="u-swp" aria-pressed="true" type="button">SWP</button>
+    <button class="fbtn" id="u-h" aria-pressed="false" type="button">Giờ</button>
+    <span id="rate-wrap"><label for="rate">1 SWP =</label>
+      <input id="rate" type="number" min="0.1" step="0.1" value="1.0"> <span>giờ</span></span>
+  </div>
+</nav>
+<main>
+<header>
+  <p class="eyebrow">github · Estimate SWP · Standard Work Point</p>
+  <h1>Estimate Report</h1>
+  <p class="meta">Nguồn: <a href="https://github.com/users/uyenhtt-0921/projects/2" rel="noreferrer">uyenhtt-0921 project 2 — 8 sub-issue tách ở phase 04</a> · Chấm điểm 2026-11-17T02:27:06Z · Hiệu chỉnh: <b>đã review, giữ nguyên</b></p>
+  <p class="meta">Mức xử lý: <b>medium</b></p>
+  <p class="unit-note">Đang xem theo GIỜ ước tính = SWP × rate (chưa có dữ liệu giờ lịch sử — rate mặc định 1, team tự chỉnh) — chỉ để tham khảo, không phải cam kết.</p>
+</header>
+<section id="scope"><h2>Phạm vi run</h2><ul>
+<li>Chế độ: <strong>closed=excluded; existing estimates=skipped</strong></li>
+<li>Quy tắc status: dùng state open/closed từ nguồn</li>
+<li>Kiểm tra estimate hiện có: nguồn estimate hiện có không khả dụng — vẫn estimate</li>
+<li>Filter phạm vi: không có</li>
+<li>Số issue bị loại theo từng cửa: không có</li>
+</ul></section>
+<section id="summary"><h2>Tổng quan</h2>
+  <div class="summary-card"><h3>Tóm tắt estimate</h3><ul><li>Tổng khối lượng ước lượng: <b><span class="v" data-swp="39">39</span></b> trên 8 work item (8 open, 0 closed) — trong đó Bug/Rework <b><span class="v" data-swp="0">0</span></b> (0%).</li><li>Khoảng bất định: <b><span class="v" data-swp="37">37</span>–<span class="v" data-swp="41">41</span></b> — dịch ±1 bậc SWP cho 2 item tin cậy vừa/thấp; 6 item tin cậy cao giữ nguyên điểm.</li></ul></div>
+  
+  
+  <p class="thesis">Bug/Rework chiếm <b>0%</b> khối lượng (<span class="v" data-swp="0">0</span>/<span class="v" data-swp="39">39</span>).</p>
+  <div class="compbar" role="img" aria-label="Kế hoạch 39 SWP, Bug/Rework 0 SWP">
+    <div class="seg build" style="flex:39">Build+Test · <span class="v" data-swp="39">39</span> (100%)</div>
+    <div class="seg rework" style="flex:1">Bug/Rework · <span class="v" data-swp="0">0</span> (0%)</div>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--build)"></i>Kế hoạch — Build 6 item + Test/QA 2 item</span>
+    <span><i style="background:var(--rework)"></i>Bug/Rework — 0 item (subtotal riêng, không cộng vào tổng kế hoạch)</span>
+  </div>
+  
+  <div class="tiles">
+    <div class="tile"><b><span class="v" data-swp="39">39</span></b><span>Tổng khối lượng (8 item) · khoảng <span class="v" data-swp="37">37</span>–<span class="v" data-swp="41">41</span></span></div>
+    <div class="tile"><b>8/0</b><span>Open / Closed</span></div>
+    <div class="tile"><b>6/2/0</b><span>Tin cậy cao / vừa / thấp</span></div>
+    <div class="tile warn"><b>0</b><span>Item tin cậy thấp</span></div>
+    <div class="tile alert"><b>0</b><span>Đề xuất tách issue</span></div>
+  </div>
+  <h3>Theo loại issue</h3><div class="tablewrap card-table"><table>
+<thead><tr><th>Loại</th><th class="num">Số issue</th><th class="num">Khối lượng</th><th>Ghi chú</th></tr></thead><tbody>
+<tr><td>Build (devtask/CR)</td><td class="num">6</td><td class="num"><span class="v" data-swp="28">28</span></td><td>Khối lượng xây — tính vào tổng kế hoạch</td></tr><tr><td>Test/QA</td><td class="num">2</td><td class="num"><span class="v" data-swp="11">11</span></td><td>Khối lượng kiểm thử — tính vào tổng kế hoạch</td></tr><tr><td class="strong">TỔNG KẾ HOẠCH</td><td class="num strong">8</td><td class="num strong"><span class="v" data-swp="39">39</span></td><td>Build + Test/QA</td></tr><tr><td class="strong">TỔNG WORK ITEM</td><td class="num strong">8</td><td class="num strong"><span class="v" data-swp="39">39</span></td><td>Mọi work item được chấm trực tiếp</td></tr></tbody></table></div>
+  <div class="hist" role="img" aria-label="Phân bố SWP"><div class="hbar" title="1 item có 3 SWP"><span class="hcount">1</span><span class="hfill" style="height:17%"></span><span class="hlabel">3</span></div><div class="hbar" title="6 item có 5 SWP"><span class="hcount">6</span><span class="hfill" style="height:100%"></span><span class="hlabel">5</span></div><div class="hbar" title="1 item có 6 SWP"><span class="hcount">1</span><span class="hfill" style="height:17%"></span><span class="hlabel">6</span></div></div><p class="note">Phân bố điểm theo mức SWP (trục hoành luôn hiển thị theo điểm).</p>
+  
+</section>
+
+
+<section id="issues"><h2>Chi tiết theo nhóm</h2>
+  <div class="controls">
+    <input id="search" type="search" placeholder="Tìm theo #ref hoặc tiêu đề…" aria-label="Tìm kiếm issue" autocomplete="off">
+    <label>Discipline <select id="discipline"><option value="">Tất cả</option><option value="API">API</option><option value="DB">DB</option><option value="Migration">Migration</option><option value="QA">QA</option><option value="UI">UI</option></select></label>
+    <label>Work type <select id="work-type"><option value="">Tất cả</option><option value="feature">feature</option><option value="migration">migration</option><option value="test-design">test-design</option></select></label>
+    <label>Confidence <select id="confidence"><option value="">Tất cả</option><option>high</option><option>medium</option><option>low</option></select></label>
+    <label>Hiệu chỉnh <select id="calibration"><option value="">Tất cả</option><option value="approved">issue mẫu — đã duyệt</option><option value="unchanged">không đổi</option></select></label>
+  </div>
+  
+<details class="group">
+  <summary><span class="g-title">TASK <a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/2" rel="noreferrer">#2</a> — [E10-01] Migration phiên bản quy định–tỷ lệ: maker/checker là user, trạng thái withdrawn, rate_version_items, chặn sửa bản đã công bố</span>
+    <span class="g-meta">2 item · <b><span class="v" data-swp="8">8</span></b></span></summary>
+  <div class="tablewrap"><table><thead><tr>
+<th class="num"><button class="sort" type="button" data-sort="finalSwp">SWP ↕</button></th>
+<th>Ref</th><th>Tiêu đề</th><th>Mảng</th><th>Loại</th><th>Tin cậy</th>
+</tr></thead><tbody data-rows id="group-1-rows">
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#260 [e10-01a] schema phiên bản tỷ lệ: maker/checker fk + check theo id, enum withdrawn, bảng rate_version_items, chuyển seed rate_bp e10 implement migration migration" data-discipline="Migration"
+          data-work-type="migration" data-confidence="high"
+          data-calibration="unchanged" data-initial-swp="5"
+          data-final-swp="5">
+        <td class="num"><span class="chip t2">5</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/260" rel="noreferrer">#260</a></td>
+        <td class="title">[E10-01a] Schema phiên bản tỷ lệ: maker/checker FK + CHECK theo id, enum withdrawn, bảng rate_version_items, chuyển seed rate_bp <details><summary>Chi tiết</summary><p class="audit">Điểm: 5 SWP (mức dễ) · hiệu chỉnh: không đổi · căn cứ: EXTRACTED · function: E10 · activity: implement</p><p>Đổi FK/CHECK, enum, thêm một bảng và chuyển dữ liệu seed (S3). Chuyển seed có kiểm khớp trước/sau là migration có kiểm soát (C2).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Không có gap</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>Migration</td>
+        <td>migration</td>
+        <td><span class="conf high"><span class="dot"></span>cao</span></td>
+      </tr>
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#261 [e10-01b] bất biến bản đã công bố: trigger chặn update/delete bản published (chỉ chuyển withdrawn qua rpc) + rls chỉ đọc e10 implement db feature" data-discipline="DB"
+          data-work-type="feature" data-confidence="high"
+          data-calibration="approved" data-initial-swp="3"
+          data-final-swp="3">
+        <td class="num"><span class="chip t2">3</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/261" rel="noreferrer">#261</a></td>
+        <td class="title">[E10-01b] Bất biến bản đã công bố: trigger chặn UPDATE/DELETE bản published (chỉ chuyển withdrawn qua RPC) + RLS chỉ đọc <details><summary>Chi tiết</summary><p class="audit">Điểm: 3 SWP (mức dễ) · hiệu chỉnh: issue mẫu — đã duyệt · căn cứ: EXTRACTED · function: E10 · activity: implement</p><p>Một trigger và chính sách RLS trên một bảng (S2). Phân biệt chuyển withdrawn hợp lệ với sửa trực tiếp là nhánh trạng thái (C2).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Không có gap</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>DB</td>
+        <td>feature</td>
+        <td><span class="conf high"><span class="dot"></span>cao</span></td>
+      </tr></tbody></table></div>
+</details>
+<details class="group">
+  <summary><span class="g-title">TASK <a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/150" rel="noreferrer">#150</a> — [E08-10] H002 業務日ロック・締め解除画面 + API-STL-003 danh sách ngày nghiệp vụ</span>
+    <span class="g-meta">2 item · <b><span class="v" data-swp="10">10</span></b></span></summary>
+  <div class="tablewrap"><table><thead><tr>
+<th class="num"><button class="sort" type="button" data-sort="finalSwp">SWP ↕</button></th>
+<th>Ref</th><th>Tiêu đề</th><th>Mảng</th><th>Loại</th><th>Tin cậy</th>
+</tr></thead><tbody data-rows id="group-2-rows">
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#256 [e08-10a] api-stl-003 danh sách ngày nghiệp vụ kèm trạng thái chặn từng ngày (khóa, xin mở khóa, lý do chặn) e08 implement api feature" data-discipline="API"
+          data-work-type="feature" data-confidence="high"
+          data-calibration="approved" data-initial-swp="5"
+          data-final-swp="5">
+        <td class="num"><span class="chip t2">5</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/256" rel="noreferrer">#256</a></td>
+        <td class="title">[E08-10a] API-STL-003 danh sách ngày nghiệp vụ kèm trạng thái chặn từng ngày (khóa, xin mở khóa, lý do chặn) <details><summary>Chi tiết</summary><p class="audit">Điểm: 5 SWP (mức dễ) · hiệu chỉnh: issue mẫu — đã duyệt · căn cứ: EXTRACTED · function: E08 · activity: implement</p><p>Một endpoint danh sách gộp trạng thái khóa, yêu cầu chờ và 4 mã chặn từ nhiều bảng (S3). Nhiều trạng thái chặn và kiểm quyền theo vai trò (C2).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Không có gap</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>API</td>
+        <td>feature</td>
+        <td><span class="conf high"><span class="dot"></span>cao</span></td>
+      </tr>
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#257 [e08-10b] màn hình h002 業務日ロック・締め解除画面: khóa, xin mở khóa, duyệt / từ chối, hiển thị trạng thái chặn e08 implement ui feature" data-discipline="UI"
+          data-work-type="feature" data-confidence="high"
+          data-calibration="unchanged" data-initial-swp="5"
+          data-final-swp="5">
+        <td class="num"><span class="chip t2">5</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/257" rel="noreferrer">#257</a></td>
+        <td class="title">[E08-10b] Màn hình H002 業務日ロック・締め解除画面: khóa, xin mở khóa, duyệt / từ chối, hiển thị trạng thái chặn <details><summary>Chi tiết</summary><p class="audit">Điểm: 5 SWP (mức dễ) · hiệu chỉnh: không đổi · căn cứ: EXTRACTED · function: E08 · activity: implement</p><p>Một màn hình gồm danh sách, hộp thoại khóa, form xin mở khóa và khu duyệt (S3). Nút và thông báo thay đổi theo 4 trạng thái chặn, maker ≠ checker có MFA (C2).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Không có gap</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>UI</td>
+        <td>feature</td>
+        <td><span class="conf high"><span class="dot"></span>cao</span></td>
+      </tr></tbody></table></div>
+</details>
+<details class="group">
+  <summary><span class="g-title">TASK <a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/165" rel="noreferrer">#165</a> — [E09-12] Bộ test vector 奨励金 và bộ test tích hợp theo FIG-013 / BR-INC-01</span>
+    <span class="g-meta">2 item · <b><span class="v" data-swp="11">11</span></b></span></summary>
+  <div class="tablewrap"><table><thead><tr>
+<th class="num"><button class="sort" type="button" data-sort="finalSwp">SWP ↕</button></th>
+<th>Ref</th><th>Tiêu đề</th><th>Mảng</th><th>Loại</th><th>Tin cậy</th>
+</tr></thead><tbody data-rows id="group-3-rows">
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#259 [e09-12b] bộ test tích hợp 奨励金 đồng thời: 入金 song song, 入金 lúc i001 đang chạy, 入金 đảo, điều chỉnh sau khi tính e09 implement qa test-design" data-discipline="QA"
+          data-work-type="test-design" data-confidence="high"
+          data-calibration="approved" data-initial-swp="6"
+          data-final-swp="6">
+        <td class="num"><span class="chip t3">6</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/259" rel="noreferrer">#259</a></td>
+        <td class="title">[E09-12b] Bộ test tích hợp 奨励金 đồng thời: 入金 song song, 入金 lúc I001 đang chạy, 入金 đảo, điều chỉnh sau khi tính <details><summary>Chi tiết</summary><p class="audit">Điểm: 6 SWP (mức vừa) · hiệu chỉnh: issue mẫu — đã duyệt · căn cứ: EXTRACTED · function: E09 · activity: implement</p><p>Bốn kịch bản tích hợp cho một phân hệ (S3). Ghi song song và chạy I001 đồng thời đòi hỏi điều khiển thứ tự và khóa người mua + kỳ (C3).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Không có gap</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>QA</td>
+        <td>test</td>
+        <td><span class="conf high"><span class="dot"></span>cao</span></td>
+      </tr>
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#258 [e09-12a] bộ test vector 奨励金 chạy tự động trong ci (fig-013 / br-inc-01) e09 implement qa test-design" data-discipline="QA"
+          data-work-type="test-design" data-confidence="high"
+          data-calibration="approved" data-initial-swp="5"
+          data-final-swp="5">
+        <td class="num"><span class="chip t2">5</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/258" rel="noreferrer">#258</a></td>
+        <td class="title">[E09-12a] Bộ test vector 奨励金 chạy tự động trong CI (FIG-013 / BR-INC-01) <details><summary>Chi tiết</summary><p class="audit">Điểm: 5 SWP (mức dễ) · hiệu chỉnh: issue mẫu — đã duyệt · căn cứ: EXTRACTED · function: E09 · activity: implement</p><p>Sáu vector cố định chạy trong CI cho một phân hệ (S3). Vector làm tròn và vắt hai phiên bản cần thiết kế số liệu cẩn thận (C2).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Không có gap</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>QA</td>
+        <td>test</td>
+        <td><span class="conf high"><span class="dot"></span>cao</span></td>
+      </tr></tbody></table></div>
+</details>
+<details class="group">
+  <summary><span class="g-title">TASK <a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/229" rel="noreferrer">#229</a> — [E16-02] Khung chuyển đổi: bảng staging, migration_batches, định nghĩa ánh xạ, cột migration_batch_id, RLS chỉ SYS_ADMIN</span>
+    <span class="g-meta">2 item · <b><span class="v" data-swp="10">10</span></b></span></summary>
+  <div class="tablewrap"><table><thead><tr>
+<th class="num"><button class="sort" type="button" data-sort="finalSwp">SWP ↕</button></th>
+<th>Ref</th><th>Tiêu đề</th><th>Mảng</th><th>Loại</th><th>Tin cậy</th>
+</tr></thead><tbody data-rows id="group-4-rows">
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#262 [e16-02a] bảng khung chuyển đổi: migration_batches, staging theo loại dữ liệu, bảng ánh xạ, cột migration_batch_id, rls chỉ sys_admin e16 implement db feature" data-discipline="DB"
+          data-work-type="feature" data-confidence="medium"
+          data-calibration="approved" data-initial-swp="5"
+          data-final-swp="5">
+        <td class="num"><span class="chip t2">5</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/262" rel="noreferrer">#262</a></td>
+        <td class="title">[E16-02a] Bảng khung chuyển đổi: migration_batches, staging theo loại dữ liệu, bảng ánh xạ, cột migration_batch_id, RLS chỉ SYS_ADMIN <details><summary>Chi tiết</summary><p class="audit">Điểm: 5 SWP (mức dễ) · hiệu chỉnh: issue mẫu — đã duyệt · căn cứ: INFERRED · function: E16 · activity: implement</p><p>Bảng lô, staging theo loại, bảng ánh xạ và cột migration_batch_id trên bảng nghiệp vụ (S3). Thêm cột vào bảng nghiệp vụ đang có là migration có kiểm soát (C2); thiết kế chi tiết chưa có spec (G-C43).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Thiết kế chuyển đổi chi tiết chưa có trong Lab 4 (G-C43)</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>DB</td>
+        <td>feature</td>
+        <td><span class="conf medium"><span class="dot"></span>vừa</span></td>
+      </tr>
+      <tr data-search="uyenhtt-0921/sakura-suisan-lab5#263 [e16-02b] rpc nhập có audit dùng chung cho chuyển đổi: ghi bảng nghiệp vụ, gắn migration_batch_id, chặn dữ liệu thật ở dev e16 implement api feature" data-discipline="API"
+          data-work-type="feature" data-confidence="medium"
+          data-calibration="unchanged" data-initial-swp="5"
+          data-final-swp="5">
+        <td class="num"><span class="chip t2">5</span></td>
+        <td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/263" rel="noreferrer">#263</a></td>
+        <td class="title">[E16-02b] RPC nhập có audit dùng chung cho chuyển đổi: ghi bảng nghiệp vụ, gắn migration_batch_id, chặn dữ liệu thật ở dev <details><summary>Chi tiết</summary><p class="audit">Điểm: 5 SWP (mức dễ) · hiệu chỉnh: không đổi · căn cứ: INFERRED · function: E16 · activity: implement</p><p>RPC nhập dùng chung ghi nhiều bảng nghiệp vụ kèm audit và chặn ở dev (S3). Chặn dữ liệu thật ở dev và gắn lô cho rollback là an toàn vận hành (C2); thiết kế chi tiết chưa có spec (G-C43).</p><h4>Assumptions</h4><ul><li>Không có assumption</li></ul><h4>Gaps</h4><ul><li>Thiết kế chuyển đổi chi tiết chưa có trong Lab 4 (G-C43)</li></ul><h4>Supporting evidence</h4><ul><li>Không có historical evidence</li></ul><h4>Provenance</h4><p>gh · full · fields: body, labels, title, url</p></details></td>
+        <td>API</td>
+        <td>feature</td>
+        <td><span class="conf medium"><span class="dot"></span>vừa</span></td>
+      </tr></tbody></table></div>
+</details>
+  <h3>Container (User Story / Epic) — 8</h3>
+<p class="note">SWP của container là tổng dẫn xuất từ work item con; không chấm trực tiếp, không làm tròn lại theo ma trận.</p>
+<div class="tablewrap card-table"><table><thead><tr><th>Parent</th><th>Tiêu đề</th><th>Type</th><th>Status</th><th>Children</th><th class="num">Initial SWP</th><th class="num">Final SWP</th></tr></thead><tbody id="parent-rows"><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/1" rel="noreferrer">#1</a></td><td>[E10] Epic: Quy định và tỷ lệ theo phiên bản (規程・料率版)</td><td>epic</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#2</td><td class="num">8</td><td class="num strong">8</td></tr><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/2" rel="noreferrer">#2</a></td><td>[E10-01] Migration phiên bản quy định–tỷ lệ: maker/checker là user, trạng thái withdrawn, rate_version_items, chặn sửa bản đã công bố</td><td>task</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#260, uyenhtt-0921/sakura-suisan-lab5#261</td><td class="num">8</td><td class="num strong">8</td></tr><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/19" rel="noreferrer">#19</a></td><td>[E08] Epic: Đối soát ngày, khóa ngày, tranh chấp, 入金</td><td>epic</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#150</td><td class="num">10</td><td class="num strong">10</td></tr><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/20" rel="noreferrer">#20</a></td><td>[E09] Epic: 完納奨励金</td><td>epic</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#165</td><td class="num">11</td><td class="num strong">11</td></tr><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/26" rel="noreferrer">#26</a></td><td>[E16] Epic: Chuyển đổi dữ liệu (N001, N002)</td><td>epic</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#229</td><td class="num">10</td><td class="num strong">10</td></tr><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/150" rel="noreferrer">#150</a></td><td>[E08-10] H002 業務日ロック・締め解除画面 + API-STL-003 danh sách ngày nghiệp vụ</td><td>task</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#256, uyenhtt-0921/sakura-suisan-lab5#257</td><td class="num">10</td><td class="num strong">10</td></tr><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/165" rel="noreferrer">#165</a></td><td>[E09-12] Bộ test vector 奨励金 và bộ test tích hợp theo FIG-013 / BR-INC-01</td><td>task</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#258, uyenhtt-0921/sakura-suisan-lab5#259</td><td class="num">11</td><td class="num strong">11</td></tr><tr><td><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/229" rel="noreferrer">#229</a></td><td>[E16-02] Khung chuyển đổi: bảng staging, migration_batches, định nghĩa ánh xạ, cột migration_batch_id, RLS chỉ SYS_ADMIN</td><td>task</td><td>derived</td><td>uyenhtt-0921/sakura-suisan-lab5#262, uyenhtt-0921/sakura-suisan-lab5#263</td><td class="num">10</td><td class="num strong">10</td></tr></tbody></table></div>
+</section>
+<section id="methodology"><h2>Phương pháp</h2>
+<p>Mỗi work item nhận một điểm khối lượng chuẩn — <strong>Standard Work Point (SWP)</strong> — chấm theo cùng một bảng chuẩn cố định, nên cùng một mô tả công việc luôn ra cùng một điểm. Điểm càng cao, việc càng nặng; trên báo cáo, điểm được diễn giải theo thang 5 mức: <strong>rất dễ</strong> (1–2), <strong>dễ</strong> (3–5), <strong>vừa</strong> (6–12), <strong>khó</strong> (13–25), <strong>rất khó</strong> (26+). User Story/Epic không được chấm trực tiếp — điểm của chúng là tổng điểm các task con. Quy đổi giờ trên báo cáo chỉ là tham khảo theo rate người xem tự đặt, không phải cam kết.</p>
+<details><summary>Chi tiết kỹ thuật (cách tính điểm)</summary><p class="note">SWP được tra từ ma trận Scope × Complexity 6×6 (Scope bands: 1, 2, 3, 5, 8, 13 — độ rộng công việc; Complexity bands: 0, 1, 2, 3, 5, 8 — độ khó bên trong phạm vi đó); mỗi ô = Scope × hệ số Complexity (×1, ×1.25, ×1.5, ×2, ×3, ×5) làm tròn về số nguyên — không snap Fibonacci; giá trị hợp lệ: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 13, 15, 16, 20, 24, 25, 26, 39, 40, 65. Confidence và historical evidence không thay đổi điểm. Hai trục Scope/Complexity của từng issue nằm trong audit payload nhúng cuối trang.</p></details></section>
+<section id="calibration-audit"><h2>Hiệu chỉnh theo issue mẫu (Calibration)</h2>
+<p class="note">Hệ thống chọn ra tối đa 5 issue mẫu đại diện cho cả tập; với mỗi issue mẫu, người dùng chọn mức độ khó (rất dễ → rất khó) rồi chốt điểm cụ thể trong dải điểm của mức đó, và điểm của các issue tương tự được hiệu chỉnh theo. Đây là bước để estimate phản ánh cảm nhận thực tế của team thay vì chỉ nội dung ticket.</p>
+<p>Trạng thái: <strong>đã review, giữ nguyên</strong> · Số issue đổi điểm sau hiệu chỉnh: <strong>0</strong> · Số issue mẫu: <strong>5</strong></p>
+<h3>Issue mẫu</h3><div class="tablewrap card-table"><table><thead><tr><th class="num">SWP</th><th>Ref</th><th>Tiêu đề</th><th>Độ khó</th><th>Vì sao được chọn làm mẫu</th></tr></thead><tbody><tr><td class="num"><span class="chip t2">3</span></td><td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/261" rel="noreferrer">#261</a></td><td class="title">[E10-01b] Bất biến bản đã công bố: trigger chặn UPDATE/DELETE bản published (chỉ chuyển withdrawn qua RPC) + RLS chỉ đọc</td><td>dễ</td><td>issue nhỏ nhất</td></tr><tr><td class="num"><span class="chip t2">5</span></td><td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/258" rel="noreferrer">#258</a></td><td class="title">[E09-12a] Bộ test vector 奨励金 chạy tự động trong CI (FIG-013 / BR-INC-01)</td><td>dễ</td><td>mức trung vị</td></tr><tr><td class="num"><span class="chip t3">6</span></td><td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/259" rel="noreferrer">#259</a></td><td class="title">[E09-12b] Bộ test tích hợp 奨励金 đồng thời: 入金 song song, 入金 lúc I001 đang chạy, 入金 đảo, điều chỉnh sau khi tính</td><td>vừa</td><td>issue lớn nhất</td></tr><tr><td class="num"><span class="chip t2">5</span></td><td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/256" rel="noreferrer">#256</a></td><td class="title">[E08-10a] API-STL-003 danh sách ngày nghiệp vụ kèm trạng thái chặn từng ngày (khóa, xin mở khóa, lý do chặn)</td><td>dễ</td><td>khác biệt nhất so với mặt bằng</td></tr><tr><td class="num"><span class="chip t2">5</span></td><td class="ref"><a href="https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/262" rel="noreferrer">#262</a></td><td class="title">[E16-02a] Bảng khung chuyển đổi: migration_batches, staging theo loại dữ liệu, bảng ánh xạ, cột migration_batch_id, RLS chỉ SYS_ADMIN</td><td>dễ</td><td>độ tin cậy thấp nhất</td></tr></tbody></table></div>
+<div class="cols2"><div><h3>Điều chỉnh của người dùng</h3><ul class="plain"><li>#256: 5 SWP → 5 SWP (mức dễ) · áp dụng cho các issue tương tự · Accepted without changes.</li><li>#258: 5 SWP → 5 SWP (mức dễ) · áp dụng cho các issue tương tự · Accepted without changes.</li><li>#259: 6 SWP → 6 SWP (mức vừa) · áp dụng cho các issue tương tự · Accepted without changes.</li><li>#261: 3 SWP → 3 SWP (mức dễ) · áp dụng cho các issue tương tự · Accepted without changes.</li><li>#262: 5 SWP → 5 SWP (mức dễ) · áp dụng cho các issue tương tự · Accepted without changes.</li></ul></div>
+<div><h3>Quy tắc đã áp dụng</h3><ul class="plain"><li>Không có</li></ul></div></div></section>
+<section id="provenance"><h2>Provenance</h2><p>Source family: github. Raw issue bodies and tool transcripts are intentionally omitted from this artifact.</p></section>
+<section id="caveats"><h2>Lưu ý &amp; giới hạn</h2><ul class="plain"><li>Lần chạy bổ sung cho 8 sub-issue tách từ 4 issue SWP ≥ 8 (quyết định người dùng 2026-11-17); chấm trực tiếp (lô nhỏ). Tổng epic trong báo cáo này chỉ gồm 8 issue này — xem báo cáo chính cho toàn backlog.</li><li>Thành phần Takumi: tkm:confidence đã nạp; ask-expert=không gọi.</li><li>Không có KPI Insight cho dự án này; --no-push-kpi.</li></ul></section>
+<footer>Estimate SWP — run read-only, không thay đổi dữ liệu nguồn. Mọi con số chiếu từ audit payload nhúng trong trang.</footer>
+<script id="report-data" type="application/json">{"calibrationRules":[],"caveats":["Lần chạy bổ sung cho 8 sub-issue tách từ 4 issue SWP ≥ 8 (quyết định người dùng 2026-11-17); chấm trực tiếp (lô nhỏ). Tổng epic trong báo cáo này chỉ gồm 8 issue này — xem báo cáo chính cho toàn backlog.","Thành phần Takumi: tkm:confidence đã nạp; ask-expert=không gọi.","Không có KPI Insight cho dự án này; --no-push-kpi."],"corrections":[{"approvedComplexity":2,"approvedScope":3,"issueSpecific":false,"rationale":"Accepted without changes.","representative":{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#256","sourceType":"github"}},{"approvedComplexity":2,"approvedScope":3,"issueSpecific":false,"rationale":"Accepted without changes.","representative":{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#258","sourceType":"github"}},{"approvedComplexity":3,"approvedScope":3,"issueSpecific":false,"rationale":"Accepted without changes.","representative":{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#259","sourceType":"github"}},{"approvedComplexity":2,"approvedScope":2,"issueSpecific":false,"rationale":"Accepted without changes.","representative":{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#261","sourceType":"github"}},{"approvedComplexity":2,"approvedScope":3,"issueSpecific":false,"rationale":"Accepted without changes.","representative":{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#262","sourceType":"github"}}],"issues":[{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":2,"approvedScope":3,"complexityBandDelta":0,"isRepresentative":true,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":["outlier"],"status":"approved"},"complexitySignature":["stateful"],"confidence":"high","evidenceStatus":"EXTRACTED","existingEstimate":null,"finalComplexity":2,"finalSWP":5,"finalScope":3,"functionRef":"E08","gaps":[],"initialComplexity":2,"initialSWP":5,"initialScope":3,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#256","issueType":"task","labels":["epic:E08","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#150","period":null,"primaryDiscipline":"API","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"Một endpoint danh sách gộp trạng thái khóa, yêu cầu chờ và 4 mã chặn từ nhiều bảng (S3). Nhiều trạng thái chặn và kiểm quyền theo vai trò (C2).","scopeSignature":["multi-component"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E08-10a] API-STL-003 danh sách ngày nghiệp vụ kèm trạng thái chặn từng ngày (khóa, xin mở khóa, lý do chặn)","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/256","workType":"feature"},{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":null,"approvedScope":null,"complexityBandDelta":0,"isRepresentative":false,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":[],"status":"unchanged"},"complexitySignature":["stateful"],"confidence":"high","evidenceStatus":"EXTRACTED","existingEstimate":null,"finalComplexity":2,"finalSWP":5,"finalScope":3,"functionRef":"E08","gaps":[],"initialComplexity":2,"initialSWP":5,"initialScope":3,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#257","issueType":"task","labels":["epic:E08","kind:frontend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#150","period":null,"primaryDiscipline":"UI","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"Một màn hình gồm danh sách, hộp thoại khóa, form xin mở khóa và khu duyệt (S3). Nút và thông báo thay đổi theo 4 trạng thái chặn, maker ≠ checker có MFA (C2).","scopeSignature":["multi-component"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E08-10b] Màn hình H002 業務日ロック・締め解除画面: khóa, xin mở khóa, duyệt / từ chối, hiển thị trạng thái chặn","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/257","workType":"feature"},{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":2,"approvedScope":3,"complexityBandDelta":0,"isRepresentative":true,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":["lower-median"],"status":"approved"},"complexitySignature":["algorithmic"],"confidence":"high","evidenceStatus":"EXTRACTED","existingEstimate":null,"finalComplexity":2,"finalSWP":5,"finalScope":3,"functionRef":"E09","gaps":[],"initialComplexity":2,"initialSWP":5,"initialScope":3,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#258","issueType":"task","labels":["constraint:incentive","epic:E09","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#165","period":null,"primaryDiscipline":"QA","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"Sáu vector cố định chạy trong CI cho một phân hệ (S3). Vector làm tròn và vắt hai phiên bản cần thiết kế số liệu cẩn thận (C2).","scopeSignature":["qa-matrix"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E09-12a] Bộ test vector 奨励金 chạy tự động trong CI (FIG-013 / BR-INC-01)","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/258","workType":"test-design"},{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":3,"approvedScope":3,"complexityBandDelta":0,"isRepresentative":true,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":["maximum"],"status":"approved"},"complexitySignature":["concurrency"],"confidence":"high","evidenceStatus":"EXTRACTED","existingEstimate":null,"finalComplexity":3,"finalSWP":6,"finalScope":3,"functionRef":"E09","gaps":[],"initialComplexity":3,"initialSWP":6,"initialScope":3,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#259","issueType":"task","labels":["constraint:incentive","epic:E09","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#165","period":null,"primaryDiscipline":"QA","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"Bốn kịch bản tích hợp cho một phân hệ (S3). Ghi song song và chạy I001 đồng thời đòi hỏi điều khiển thứ tự và khóa người mua + kỳ (C3).","scopeSignature":["qa-matrix"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E09-12b] Bộ test tích hợp 奨励金 đồng thời: 入金 song song, 入金 lúc I001 đang chạy, 入金 đảo, điều chỉnh sau khi tính","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/259","workType":"test-design"},{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":null,"approvedScope":null,"complexityBandDelta":0,"isRepresentative":false,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":[],"status":"unchanged"},"complexitySignature":["migration"],"confidence":"high","evidenceStatus":"EXTRACTED","existingEstimate":null,"finalComplexity":2,"finalSWP":5,"finalScope":3,"functionRef":"E10","gaps":[],"initialComplexity":2,"initialSWP":5,"initialScope":3,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#260","issueType":"task","labels":["constraint:incentive","epic:E10","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#2","period":null,"primaryDiscipline":"Migration","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"Đổi FK/CHECK, enum, thêm một bảng và chuyển dữ liệu seed (S3). Chuyển seed có kiểm khớp trước/sau là migration có kiểm soát (C2).","scopeSignature":["multi-component","data-migration"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E10-01a] Schema phiên bản tỷ lệ: maker/checker FK + CHECK theo id, enum withdrawn, bảng rate_version_items, chuyển seed rate_bp","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/260","workType":"migration"},{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":2,"approvedScope":2,"complexityBandDelta":0,"isRepresentative":true,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":["minimum"],"status":"approved"},"complexitySignature":["stateful"],"confidence":"high","evidenceStatus":"EXTRACTED","existingEstimate":null,"finalComplexity":2,"finalSWP":3,"finalScope":2,"functionRef":"E10","gaps":[],"initialComplexity":2,"initialSWP":3,"initialScope":2,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#261","issueType":"task","labels":["constraint:incentive","epic:E10","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#2","period":null,"primaryDiscipline":"DB","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"Một trigger và chính sách RLS trên một bảng (S2). Phân biệt chuyển withdrawn hợp lệ với sửa trực tiếp là nhánh trạng thái (C2).","scopeSignature":["single-component"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E10-01b] Bất biến bản đã công bố: trigger chặn UPDATE/DELETE bản published (chỉ chuyển withdrawn qua RPC) + RLS chỉ đọc","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/261","workType":"feature"},{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":2,"approvedScope":3,"complexityBandDelta":0,"isRepresentative":true,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":["lowest-confidence"],"status":"approved"},"complexitySignature":["migration"],"confidence":"medium","evidenceStatus":"INFERRED","existingEstimate":null,"finalComplexity":2,"finalSWP":5,"finalScope":3,"functionRef":"E16","gaps":["Thiết kế chuyển đổi chi tiết chưa có trong Lab 4 (G-C43)"],"initialComplexity":2,"initialSWP":5,"initialScope":3,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#262","issueType":"task","labels":["epic:E16","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#229","period":null,"primaryDiscipline":"DB","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"Bảng lô, staging theo loại, bảng ánh xạ và cột migration_batch_id trên bảng nghiệp vụ (S3). Thêm cột vào bảng nghiệp vụ đang có là migration có kiểm soát (C2); thiết kế chi tiết chưa có spec (G-C43).","scopeSignature":["multi-component"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E16-02a] Bảng khung chuyển đổi: migration_batches, staging theo loại dữ liệu, bảng ánh xạ, cột migration_batch_id, RLS chỉ SYS_ADMIN","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/262","workType":"feature"},{"activityType":"implement","assumptions":[],"calibration":{"approvedComplexity":null,"approvedScope":null,"complexityBandDelta":0,"isRepresentative":false,"issueSpecific":false,"matchedRuleId":null,"saturated":false,"scopeBandDelta":0,"selectionReasons":[],"status":"unchanged"},"complexitySignature":["operational-safety"],"confidence":"medium","evidenceStatus":"INFERRED","existingEstimate":null,"finalComplexity":2,"finalSWP":5,"finalScope":3,"functionRef":"E16","gaps":["Thiết kế chuyển đổi chi tiết chưa có trong Lab 4 (G-C43)"],"initialComplexity":2,"initialSWP":5,"initialScope":3,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#263","issueType":"task","labels":["epic:E16","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#229","period":null,"primaryDiscipline":"API","project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"rationale":"RPC nhập dùng chung ghi nhiều bảng nghiệp vụ kèm audit và chặn ở dev (S3). Chặn dữ liệu thật ở dev và gắn lô cho rollback là an toàn vận hành (C2); thiết kế chi tiết chưa có spec (G-C43).","scopeSignature":["multi-component"],"sourceType":"github","splitReason":null,"splitRecommended":false,"sprints":[],"state":"open","status":"Todo","supportingEvidence":[],"title":"[E16-02b] RPC nhập có audit dùng chung cho chuyển đổi: ghi bảng nghiệp vụ, gắn migration_batch_id, chặn dữ liệu thật ở dev","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/263","workType":"feature"}],"parents":[{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#2"],"finalSWP":8,"initialSWP":8,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#1","issueType":"epic","labels":["epic","epic:E10"],"milestones":[],"parentRef":null,"period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E10] Epic: Quy định và tỷ lệ theo phiên bản (規程・料率版)","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/1"},{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#260","uyenhtt-0921/sakura-suisan-lab5#261"],"finalSWP":8,"initialSWP":8,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#2","issueType":"task","labels":["constraint:incentive","epic:E10","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#1","period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E10-01] Migration phiên bản quy định–tỷ lệ: maker/checker là user, trạng thái withdrawn, rate_version_items, chặn sửa bản đã công bố","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/2"},{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#150"],"finalSWP":10,"initialSWP":10,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#19","issueType":"epic","labels":["epic","epic:E08"],"milestones":[],"parentRef":null,"period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E08] Epic: Đối soát ngày, khóa ngày, tranh chấp, 入金","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/19"},{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#165"],"finalSWP":11,"initialSWP":11,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#20","issueType":"epic","labels":["constraint:incentive","epic","epic:E09"],"milestones":[],"parentRef":null,"period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E09] Epic: 完納奨励金","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/20"},{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#229"],"finalSWP":10,"initialSWP":10,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#26","issueType":"epic","labels":["epic","epic:E16"],"milestones":[],"parentRef":null,"period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E16] Epic: Chuyển đổi dữ liệu (N001, N002)","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/26"},{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#256","uyenhtt-0921/sakura-suisan-lab5#257"],"finalSWP":10,"initialSWP":10,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#150","issueType":"task","labels":["epic:E08","kind:fullstack"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#19","period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E08-10] H002 業務日ロック・締め解除画面 + API-STL-003 danh sách ngày nghiệp vụ","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/150"},{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#258","uyenhtt-0921/sakura-suisan-lab5#259"],"finalSWP":11,"initialSWP":11,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#165","issueType":"task","labels":["constraint:incentive","epic:E09","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#20","period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E09-12] Bộ test vector 奨励金 và bộ test tích hợp theo FIG-013 / BR-INC-01","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/165"},{"aggregationStatus":"derived","childRefs":["uyenhtt-0921/sakura-suisan-lab5#262","uyenhtt-0921/sakura-suisan-lab5#263"],"finalSWP":10,"initialSWP":10,"issueRef":"uyenhtt-0921/sakura-suisan-lab5#229","issueType":"task","labels":["epic:E16","kind:backend"],"milestones":[],"parentRef":"uyenhtt-0921/sakura-suisan-lab5#26","period":null,"project":"sakura-suisan-lab5","provenance":{"detailStatus":"full","fields":["body","labels","title","url"],"notes":[],"retrievedVia":"gh"},"sourceType":"github","sprints":[],"state":"open","status":"Todo","title":"[E16-02] Khung chuyển đổi: bảng staging, migration_batches, định nghĩa ánh xạ, cột migration_batch_id, RLS chỉ SYS_ADMIN","url":"https://github.com/uyenhtt-0921/sakura-suisan-lab5/issues/229"}],"representatives":[{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#261","selectionReasons":["minimum"],"sourceType":"github"},{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#258","selectionReasons":["lower-median"],"sourceType":"github"},{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#259","selectionReasons":["maximum"],"sourceType":"github"},{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#256","selectionReasons":["outlier"],"sourceType":"github"},{"issueRef":"uyenhtt-0921/sakura-suisan-lab5#262","selectionReasons":["lowest-confidence"],"sourceType":"github"}],"run":{"assessors":{"primary":{"aiModel":"opus","mode":"inline"},"witness":null},"calibrationStatus":"accepted","generatedAt":"2026-11-17T02:27:06Z","period":null,"processingLevel":"medium","project":"2","selection":{"excluded":{},"existingEstimateCheck":"unavailable","filters":{"labels":[],"milestones":[],"sprints":[]},"includeClosed":false,"reestimateExisting":false,"statusRule":"issue-state"},"sourceFamily":"github","sourceLabel":"uyenhtt-0921 project 2 — 8 sub-issue tách ở phase 04","sourceUrl":"https://github.com/users/uyenhtt-0921/projects/2"},"schemaVersion":"2.0","scoringModel":"standard-work-point","scoringModelVersion":"swp-matrix-v2"}</script>
+<script>
+(()=>{'use strict';
+const body=document.body;
+const rate=document.getElementById('rate');
+const uSwp=document.getElementById('u-swp'),uH=document.getElementById('u-h');
+const vals=[...document.querySelectorAll('.v[data-swp]')];
+function fmtHours(n){const h=n*parseFloat(rate.value||'0');const s=h>=100?Math.round(h):Math.round(h*10)/10;return s+'h';}
+function renderUnits(){const hours=body.classList.contains('hours');
+for(const el of vals){const n=parseFloat(el.getAttribute('data-swp'));el.textContent=hours?fmtHours(n):(n+' SWP');}
+uSwp.setAttribute('aria-pressed',hours?'false':'true');uH.setAttribute('aria-pressed',hours?'true':'false');
+try{localStorage.setItem('estimate-swp-unit',hours?'h':'swp');localStorage.setItem('estimate-swp-rate',rate.value);}catch(e){}}
+uSwp.addEventListener('click',()=>{body.classList.remove('hours');renderUnits();});
+uH.addEventListener('click',()=>{body.classList.add('hours');renderUnits();});
+rate.addEventListener('input',renderUnits);
+try{const r=localStorage.getItem('estimate-swp-rate');if(r&&parseFloat(r)>0)rate.value=r;
+if(localStorage.getItem('estimate-swp-unit')==='h')body.classList.add('hours');}catch(e){}
+renderUnits();
+const bodies=[...document.querySelectorAll('tbody[data-rows]')];
+const allRows=bodies.flatMap(b=>[...b.querySelectorAll('tr[data-search]')]);
+const search=document.getElementById('search'),discipline=document.getElementById('discipline'),workType=document.getElementById('work-type'),confidence=document.getElementById('confidence'),calibration=document.getElementById('calibration');
+function filterRows(){const query=search.value.trim().toLocaleLowerCase();
+for(const row of allRows){row.hidden=!!((query&&!row.dataset.search.includes(query))||(discipline.value&&row.dataset.discipline!==discipline.value)||(workType.value&&row.dataset.workType!==workType.value)||(confidence.value&&row.dataset.confidence!==confidence.value)||(calibration.value&&row.dataset.calibration!==calibration.value));}
+const active=query||discipline.value||workType.value||confidence.value||calibration.value;
+for(const group of document.querySelectorAll('details.group')){if(active&&group.querySelector('tbody tr:not([hidden])'))group.open=true;}}
+search.addEventListener('input',filterRows);
+for(const control of [discipline,workType,confidence,calibration])control.addEventListener('change',filterRows);
+for(const button of document.querySelectorAll('button[data-sort]'))button.addEventListener('click',()=>{
+const tbody=button.closest('table').querySelector('tbody[data-rows]');
+const rows=[...tbody.querySelectorAll('tr[data-search]')];
+const field=button.dataset.sort;const ascending=button.dataset.dir!=='asc';
+button.dataset.dir=ascending?'asc':'desc';const direction=ascending?1:-1;
+rows.sort((a,b)=>(Number(a.dataset[field])-Number(b.dataset[field]))*direction||a.dataset.search.localeCompare(b.dataset.search));
+for(const row of rows)tbody.appendChild(row);});
+})();
+</script></main></body></html>
