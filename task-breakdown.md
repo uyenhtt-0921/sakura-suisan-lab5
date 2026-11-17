@@ -27,7 +27,7 @@ nên số issue khớp Project. Đường dẫn spec tính từ `lab4-design/spe
 - 17 epic theo đúng 17 nhóm chức năng của LAB-1 (共通基盤, F01–F16, hạ tầng) để so sánh ước lượng; epic là issue nhãn `epic` + `epic:Exx`.
 - Issue gắn vào epic, sub-issue gắn vào issue cha bằng quan hệ sub-issue gốc của GitHub; phụ thuộc giữa issue ghi bằng quan hệ "blocked by".
 - Field trên Project: `Status` (Todo / In Progress / Blocked / Done), `Sprint` (Iteration), `Owner (giả định)` (vai trò BE1, BE2, FE-Lead,
-  FE, QA, Infra — không gán tài khoản thật), `SWP` (điểm đã review), `Hours` (= SWP × 7).
+  FE, QA, Infra cho issue; PL cho epic — không gán tài khoản thật), `SWP` (điểm đã review; issue cha / epic ghi tổng con), `Hours` (= SWP × 7).
 - Nhãn: `kind:*` (backend / frontend / fullstack / infra / clarification), `constraint:*` (ràng buộc nghiệp vụ, trong đó `constraint:incentive`
   cho 完納奨励金).
 - Quy mô: 17 epic, 193 issue (21 issue cha), 53 sub-issue → 225 việc có SWP; 18 issue làm rõ.
