@@ -20,7 +20,8 @@
 | Báo cáo HTML chấm SWP (lần chính) | [`swp-report/estimate-swp-uyenhtt-0921-project-2-261117-0906.html`](swp-report/estimate-swp-uyenhtt-0921-project-2-261117-0906.html) |
 | Báo cáo HTML chấm SWP (8 sub-issue tách thêm) | [`swp-report/estimate-swp-uyenhtt-0921-project-2-split-subissues-261117-0942.html`](swp-report/estimate-swp-uyenhtt-0921-project-2-split-subissues-261117-0942.html) |
 
-**Mở thử bằng cửa sổ ẩn danh:** _chưa kiểm — cập nhật sau khi push (phase 07)._
+**Mở thử bằng cửa sổ ẩn danh (2026-11-17):** đã mở được repo và GitHub Project khi không đăng nhập (thấy README, bảng issue có SWP / Hours / Sprint).
+Kiểm thêm bằng `curl` không đăng nhập: repo, các file `.md`, 2 báo cáo HTML, ảnh burndown, Project và issue đều trả HTTP 200.
 
 ## 3. Cấu trúc repo
 
